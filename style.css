@@ -28,6 +28,37 @@ span {
     padding: 1.2rem;
 }
 
+
+.delete-btn {
+    font-size: 2rem;
+    font-weight: bolder;
+    color: red;
+    background: none;
+    border: none;
+} 
+
+.delete-btn:hover {
+    color: black;
+    cursor: pointer;
+    transform: scale(1.2);
+    animation-duration: 200ms;
+}
+
+.edit-btn {
+    font-size: 1rem;
+    font-weight: bolder;
+    background: rgb(202, 202, 202);
+    border: rgb(95, 95, 95) 1px solid;
+    padding: 3px;
+    border-radius: 5px;
+}
+
+.edit-btn:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+    animation-duration: 200ms;
+}
+
 input {
     padding: 5px;
 }
@@ -35,6 +66,7 @@ input {
 .add_button {
     margin: 1rem;
     padding: 5px;
+    
 }
 
 .add_button:hover {
@@ -91,6 +123,9 @@ h1{
 }
 
 .card{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: white;
     color: #333;
     padding: 1rem;
@@ -99,6 +134,7 @@ h1{
     cursor: grab;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s, box-shadow 0.2s;
+    font-size: 1rem;
 }
 
 .card:active{
