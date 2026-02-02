@@ -16,7 +16,11 @@ function newTask() {
     div.classList.add("card");
     div.draggable = true;
     div.id = "card-" + Date.now(); // uses current date for a unique id
-    div.innerText = task;
+    
+    //wrap the task text in a span so innerText doesn't grab the button later.
+    const textSpan = document.createElement("span");
+    textSpan.innerText = task; 
+    div.appendChild(textSpan);
 
     div.addEventListener("dragstart", dragStart);
     div.addEventListener("dragend", dragEnd);
@@ -42,6 +46,35 @@ function newTask() {
     });
 
     div.appendChild(deleteBtn);
+
+    const editBtn = document.createElement("button");
+    editBtn.innerText = "✏️";
+    editBtn.classList.add("edit-btn");
+
+    editBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        
+        // Find the span inside the card
+        const textSpan = div.querySelector("span"); 
+        
+        // Toggle Edit Mode
+        const isEditing = textSpan.getAttribute("contenteditable") === "true";
+        
+        if (!isEditing) {
+            textSpan.setAttribute("contenteditable", "true");
+            textSpan.focus(); // Put the cursor in the text
+            editBtn.innerText = "💾"; // Change icon to save disk
+            div.draggable = false; // Disable dragging while typing
+        } else {
+            textSpan.setAttribute("contenteditable", "false");
+            editBtn.innerText = "✏️"; // Change back to pencil
+            div.draggable = true;  // Re-enable dragging
+            saveState(); // Record the new text to LocalStorage
+        }
+    });
+
+    div.appendChild(editBtn);
+    document.getElementById("list1").appendChild(div);
 
     saveState();
 }
@@ -144,7 +177,8 @@ function saveState() {
         .map(card => card.id) creates a new array containing the id of the cards and the text inside the card
         */
         const cardsData = Array.from(list.querySelectorAll(".card")).map(card => {
-            return { id: card.id, text: card.innerText };
+            const text = card.querySelector("span").innerText;
+            return { id: card.id, text: text };
         });
         
         //adds an entry to the state object. becomes {"todo-list": [{ "id": "card-123", "text": "abcd" }]}
@@ -180,7 +214,10 @@ function loadState() {
                 card.id = cardData.id;
                 card.classList.add("card");
                 card.draggable = true;
-                card.innerText = cardData.text;
+                
+                const textSpan = document.createElement("span");
+                textSpan.innerText = cardData.text; 
+                card.appendChild(textSpan);
 
                 const deleteBtn = document.createElement("button");
                 deleteBtn.innerText = "×";
@@ -196,6 +233,32 @@ function loadState() {
                 });
 
                 card.appendChild(deleteBtn);
+
+                const editBtn = document.createElement("button");
+                editBtn.innerText = "✏️";
+                editBtn.classList.add("edit-btn");
+                editBtn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    // Find the span inside the card
+                    const textSpan = card.querySelector("span"); 
+                    
+                    // Toggle Edit Mode
+                    const isEditing = textSpan.getAttribute("contenteditable") === "true";
+                    
+                    if (!isEditing) {
+                        textSpan.setAttribute("contenteditable", "true");
+                        textSpan.focus(); // Put the cursor in the text
+                        editBtn.innerText = "💾"; // Change icon to save disk
+                        card.draggable = false; // Disable dragging while typing
+                    } else {
+                        textSpan.setAttribute("contenteditable", "false");
+                        editBtn.innerText = "✏️"; // Change back to pencil
+                        card.draggable = true;  // Re-enable dragging
+                        saveState(); // Record the new text to LocalStorage
+                    }
+                });
+
+                card.appendChild(editBtn);
 
                 card.addEventListener("dragstart", dragStart);
                 card.addEventListener("dragend", dragEnd);
