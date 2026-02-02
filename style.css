@@ -41,6 +41,24 @@ input {
     cursor: pointer;
 }
 
+/* cwagner: Styling for search/filter container and input */
+.search-container {
+    margin: 1rem 0;
+}
+
+.searchInput {
+    padding: 8px;
+    width: 300px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: #333;
+}
+
 h1{
     color: #333;
     margin-bottom: 20px;

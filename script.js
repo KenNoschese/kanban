@@ -2,10 +2,14 @@ const cards = document.querySelectorAll(".card");
 const lists = document.querySelectorAll(".list");
 const addTask = document.querySelector(".add_button");
 const input = document.querySelector(".taskInput");
+const searchInput = document.querySelector(".searchInput"); // cwagner: Get search input element
 
 loadState();
 
 addTask.addEventListener("click", newTask);
+
+// cwagner: Add event listener for search functionality
+searchInput.addEventListener("input", filterTasks);
 
 function newTask() {
     const task = input.value.trim();
@@ -268,5 +272,23 @@ function loadState() {
                 list.appendChild(card);
             }
         });
+    });
+}
+
+// cwagner: Filter tasks based on search input
+// Hides cards that don't match the search term
+function filterTasks() {
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const allCards = document.querySelectorAll(".card");
+    
+    allCards.forEach(card => {
+        const taskText = card.querySelector("span").innerText.toLowerCase();
+        
+        // Show card if search is empty or if task text includes search term
+        if (searchTerm === "" || taskText.includes(searchTerm)) {
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
     });
 }
