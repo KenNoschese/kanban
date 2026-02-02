@@ -13,14 +13,6 @@ body{
     min-height: 100vh;
 }
 
-span {
-    font-size: small;
-}
-
-.instructions {
-    display: flex;
-    flex-direction: column;
-}
 
 .container{
     text-align: center;
@@ -100,7 +92,7 @@ input {
 
 .searchInput:focus {
     outline: none;
-    border-color: #4a90e2;
+    border-color: #174061;
     box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
 }
 
