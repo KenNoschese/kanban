@@ -124,8 +124,10 @@ h1{
 
 .card{
     display: flex;
+    flex-direction: column; /* stack task text, optional category, and buttons vertically */
     justify-content: center;
     align-items: center;
+    gap: 6px; /* small space between stacked items */
     background-color: white;
     color: #333;
     padding: 1rem;
@@ -157,4 +159,12 @@ h1{
         width: 80%;
         margin-bottom: 20px;
     }
+}
+
+/* Category label shown under task text (optional, small and subtle) */
+.category{
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 6px;
+    text-align: center; /* center the category under the task text */
 }

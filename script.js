@@ -2,6 +2,8 @@ const cards = document.querySelectorAll(".card");
 const lists = document.querySelectorAll(".list");
 const addTask = document.querySelector(".add_button");
 const input = document.querySelector(".taskInput");
+// Beginner-friendly category input (optional)
+const categoryInput = document.querySelector(".categoryInput");
 const searchInput = document.querySelector(".searchInput"); // cwagner: Get search input element
 
 loadState();
@@ -13,6 +15,8 @@ searchInput.addEventListener("input", filterTasks);
 
 function newTask() {
     const task = input.value.trim();
+    // Read optional category (can be empty string)
+    const category = categoryInput ? categoryInput.value.trim() : "";
 
     if(task === "") return;
 
@@ -26,13 +30,21 @@ function newTask() {
     textSpan.innerText = task; 
     div.appendChild(textSpan);
 
+    // If a category was provided, store it on the card and show it
+    if (category) {
+        div.dataset.category = category; // store in DOM so saveState() can find it
+        const categorySpan = document.createElement("div");
+        categorySpan.classList.add("category");
+        categorySpan.innerText = category;
+        div.appendChild(categorySpan);
+    }
+
     div.addEventListener("dragstart", dragStart);
     div.addEventListener("dragend", dragEnd);
 
-    const list = document.getElementById("list1");
-    list.appendChild(div);
 
     input.value="";
+    if (categoryInput) categoryInput.value = ""; // clear category input for next add
 
     //delete functionality
     //adds delete button in each card
@@ -182,7 +194,10 @@ function saveState() {
         */
         const cardsData = Array.from(list.querySelectorAll(".card")).map(card => {
             const text = card.querySelector("span").innerText;
-            return { id: card.id, text: text };
+            // read category stored on the card (may be undefined)
+            const category = card.dataset.category || "";
+            // Save id, text, and category so we can restore exactly on load
+            return { id: card.id, text: text, category: category };
         });
         
         //adds an entry to the state object. becomes {"todo-list": [{ "id": "card-123", "text": "abcd" }]}
@@ -222,6 +237,15 @@ function loadState() {
                 const textSpan = document.createElement("span");
                 textSpan.innerText = cardData.text; 
                 card.appendChild(textSpan);
+
+                // If the saved card had a category, recreate and store it on the DOM element
+                if (cardData.category) {
+                    card.dataset.category = cardData.category;
+                    const categorySpan = document.createElement("div");
+                    categorySpan.classList.add("category");
+                    categorySpan.innerText = cardData.category;
+                    card.appendChild(categorySpan);
+                }
 
                 const deleteBtn = document.createElement("button");
                 deleteBtn.innerText = "×";
@@ -283,9 +307,11 @@ function filterTasks() {
     
     allCards.forEach(card => {
         const taskText = card.querySelector("span").innerText.toLowerCase();
-        
-        // Show card if search is empty or if task text includes search term
-        if (searchTerm === "" || taskText.includes(searchTerm)) {
+        // also search category (if present)
+        const categoryText = (card.dataset.category || "").toLowerCase();
+
+        // Show card if search is empty or if task text OR category includes search term
+        if (searchTerm === "" || taskText.includes(searchTerm) || categoryText.includes(searchTerm)) {
             card.style.display = "block";
         } else {
             card.style.display = "none";
