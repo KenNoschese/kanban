@@ -19,6 +19,19 @@ body{
     padding: 1.2rem;
 }
 
+input {
+    padding: 5px;
+}
+
+.add_button {
+    margin: 1rem;
+    padding: 5px;
+}
+
+.add_button:hover {
+    cursor: pointer;
+}
+
 h1{
     color: #333;
     margin-bottom: 20px;
