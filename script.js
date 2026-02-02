@@ -312,7 +312,7 @@ function filterTasks() {
 
         // Show card if search is empty or if task text OR category includes search term
         if (searchTerm === "" || taskText.includes(searchTerm) || categoryText.includes(searchTerm)) {
-            card.style.display = "block";
+            card.style.display = "";
         } else {
             card.style.display = "none";
         }
