@@ -2,7 +2,6 @@ const cards = document.querySelectorAll(".card");
 const lists = document.querySelectorAll(".list");
 const addTask = document.querySelector(".add_button");
 const input = document.querySelector(".taskInput");
-// Beginner-friendly category input (optional)
 const categoryInput = document.querySelector(".categoryInput");
 const searchInput = document.querySelector(".searchInput"); // cwagner: Get search input element
 
@@ -43,7 +42,7 @@ function newTask() {
     div.addEventListener("dragend", dragEnd);
 
 
-    input.value="";
+    input.value=""; //clear the input field for next add
     if (categoryInput) categoryInput.value = ""; // clear category input for next add
 
     //delete functionality
@@ -74,8 +73,8 @@ function newTask() {
         const textSpan = div.querySelector("span"); 
         
         // Toggle Edit Mode
-        const isEditing = textSpan.getAttribute("contenteditable") === "true";
         
+        const isEditing = textSpan.getAttribute("contenteditable") === "true";
         if (!isEditing) {
             textSpan.setAttribute("contenteditable", "true");
             textSpan.focus(); // Put the cursor in the text
@@ -90,6 +89,7 @@ function newTask() {
     });
 
     div.appendChild(editBtn);
+    
     document.getElementById("list1").appendChild(div);
 
     saveState();
