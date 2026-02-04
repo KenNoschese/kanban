@@ -240,6 +240,7 @@ function loadState() {
         cardsData.forEach(cardData => {
             let card = document.getElementById(cardData.id);
             //if card is newly made, card will be remade when loaded based on the looped CardsData
+            ////If the card doesn't exist in the DOM yet, recreate it from saved data
             if (!card) {
                 card = createCard(cardData.id, cardData.text, cardData.category || "");
             }
