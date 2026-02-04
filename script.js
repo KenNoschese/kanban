@@ -264,8 +264,10 @@ function filterTasks() {
 
         // Show card if search is empty or if task text OR category includes search term
         if (searchTerm === "" || taskText.includes(searchTerm) || categoryText.includes(searchTerm)) {
+          //if search term is found, card is not hidden. (css)   
             card.style.display = "";
         } else {
+            //if search term is not found, card is hidden. (css)
             card.style.display = "none";
         }
     });
