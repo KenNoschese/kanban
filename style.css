@@ -153,9 +153,17 @@ h1{
     transform: translateY(-2px);
 }
 
+span:focus {
+    cursor: text;
+}
+
 .card:active {
     cursor: grabbing;
     transform: scale(0.98);
+}
+
+.category:hover {
+    cursor: text;
 }
 
 .card span {

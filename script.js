@@ -1,4 +1,3 @@
-const cards = document.querySelectorAll(".card");
 const lists = document.querySelectorAll(".list");
 const addTask = document.querySelector(".add_button");
 const input = document.querySelector(".taskInput");
@@ -28,15 +27,17 @@ function newTask() {
     const textSpan = document.createElement("span");
     textSpan.innerText = task; 
     div.appendChild(textSpan);
+    //always create a category span
+    const categorySpan = document.createElement("div");
+    categorySpan.classList.add("category");
+    categorySpan.innerText = category || ""; // Use the category or an empty string
+    div.appendChild(categorySpan);
 
-    // If a category was provided, store it on the card and show it
+    // Only set the dataset if there is a category
     if (category) {
-        div.dataset.category = category; // store in DOM so saveState() can find it
-        const categorySpan = document.createElement("div");
-        categorySpan.classList.add("category");
-        categorySpan.innerText = category;
-        div.appendChild(categorySpan);
+        div.dataset.category = category;
     }
+
 
     div.addEventListener("dragstart", dragStart);
     div.addEventListener("dragend", dragEnd);
@@ -71,17 +72,27 @@ function newTask() {
         
         // Find the span inside the card
         const textSpan = div.querySelector("span"); 
+        const catSpan = div.querySelector(".category");
         
         // Toggle Edit Mode
         
         const isEditing = textSpan.getAttribute("contenteditable") === "true";
         if (!isEditing) {
             textSpan.setAttribute("contenteditable", "true");
+            catSpan.setAttribute("contenteditable", "true");
+            catSpan.style.minHeight = "1em"; 
+            catSpan.style.border = "1px dashed #ccc";
+
             textSpan.focus(); // Put the cursor in the text
             editBtn.innerText = "💾"; // Change icon to save disk
             div.draggable = false; // Disable dragging while typing
         } else {
             textSpan.setAttribute("contenteditable", "false");
+            catSpan.setAttribute("contenteditable", "false");
+
+            catSpan.style.minHeight = "";
+            catSpan.style.border = "";
+            div.dataset.category = catSpan.innerText.trim();
             editBtn.innerText = "✏️"; // Change back to pencil
             div.draggable = true;  // Re-enable dragging
             saveState(); // Record the new text to LocalStorage
@@ -102,10 +113,6 @@ dragstart: click and begin to move the mouse
 dragend: when you let go of the mouse
 */
 
-for(const card of cards){
-    card.addEventListener("dragstart", dragStart);
-    card.addEventListener("dragend", dragEnd);
-}
 
 /*
 loops through each list(to do, in progress, done)
@@ -238,14 +245,13 @@ function loadState() {
                 textSpan.innerText = cardData.text; 
                 card.appendChild(textSpan);
 
-                // If the saved card had a category, recreate and store it on the DOM element
-                if (cardData.category) {
-                    card.dataset.category = cardData.category;
-                    const categorySpan = document.createElement("div");
-                    categorySpan.classList.add("category");
-                    categorySpan.innerText = cardData.category;
-                    card.appendChild(categorySpan);
-                }
+                // Always create a category span
+                const categorySpan = document.createElement("div");
+                categorySpan.classList.add("category");
+                // If data exists, fill it; otherwise, keep it empty but present
+                categorySpan.innerText = cardData.category || ""; 
+                card.dataset.category = cardData.category || "";
+                card.appendChild(categorySpan);
 
                 const deleteBtn = document.createElement("button");
                 deleteBtn.innerText = "×";
@@ -269,17 +275,26 @@ function loadState() {
                     e.stopPropagation();
                     // Find the span inside the card
                     const textSpan = card.querySelector("span"); 
-                    
+                    const catSpan = card.querySelector(".category");
                     // Toggle Edit Mode
                     const isEditing = textSpan.getAttribute("contenteditable") === "true";
                     
                     if (!isEditing) {
                         textSpan.setAttribute("contenteditable", "true");
+                        catSpan.setAttribute("contenteditable", "true");
+
+                        catSpan.style.minHeight = "1em"; 
+                        catSpan.style.border = "1px dashed #ccc";
                         textSpan.focus(); // Put the cursor in the text
                         editBtn.innerText = "💾"; // Change icon to save disk
                         card.draggable = false; // Disable dragging while typing
                     } else {
                         textSpan.setAttribute("contenteditable", "false");
+                        catSpan.setAttribute("contenteditable", "false");
+                        catSpan.style.minHeight = "1"; 
+                        catSpan.style.border = "";
+                        // Update the dataset to match the new edited text
+                        card.dataset.category = catSpan.innerText; 
                         editBtn.innerText = "✏️"; // Change back to pencil
                         card.draggable = true;  // Re-enable dragging
                         saveState(); // Record the new text to LocalStorage
