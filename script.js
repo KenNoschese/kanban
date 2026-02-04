@@ -11,22 +11,17 @@ addTask.addEventListener("click", newTask);
 // cwagner: Add event listener for search functionality
 searchInput.addEventListener("input", filterTasks);
 
-function newTask() {
-    const task = input.value.trim();
-    // Read optional category (can be empty string)
-    const category = categoryInput ? categoryInput.value.trim() : "";
-
-    if(task === "") return;
-
+function createCard(id, text, category) {
     const div = document.createElement("div");
     div.classList.add("card");
     div.draggable = true;
-    div.id = "card-" + Date.now(); // uses current date for a unique id
+    div.id = id;
     
     //wrap the task text in a span so innerText doesn't grab the button later.
     const textSpan = document.createElement("span");
-    textSpan.innerText = task; 
+    textSpan.innerText = text; 
     div.appendChild(textSpan);
+
     //always create a category span
     const categorySpan = document.createElement("div");
     categorySpan.classList.add("category");
@@ -38,13 +33,8 @@ function newTask() {
         div.dataset.category = category;
     }
 
-
     div.addEventListener("dragstart", dragStart);
     div.addEventListener("dragend", dragEnd);
-
-
-    input.value=""; //clear the input field for next add
-    if (categoryInput) categoryInput.value = ""; // clear category input for next add
 
     //delete functionality
     //adds delete button in each card
@@ -100,8 +90,24 @@ function newTask() {
     });
 
     div.appendChild(editBtn);
+
+    return div;
+}
+
+function newTask() {
+    const task = input.value.trim();
+    // Read optional category (can be empty string)
+    const category = categoryInput ? categoryInput.value.trim() : "";
+
+    if(task === "") return;
+
+    const id = "card-" + Date.now(); // uses current date for a unique id
+    const card = createCard(id, task, category);
     
-    document.getElementById("list1").appendChild(div);
+    document.getElementById("list1").appendChild(card);
+
+    input.value=""; //clear the input field for next add
+    if (categoryInput) categoryInput.value = ""; // clear category input for next add
 
     saveState();
 }
@@ -235,76 +241,7 @@ function loadState() {
             let card = document.getElementById(cardData.id);
             //if card is newly made, card will be remade when loaded based on the looped CardsData
             if (!card) {
-                //same logic sa new task
-                card = document.createElement("div");
-                card.id = cardData.id;
-                card.classList.add("card");
-                card.draggable = true;
-                
-                const textSpan = document.createElement("span");
-                textSpan.innerText = cardData.text; 
-                card.appendChild(textSpan);
-
-                // Always create a category span
-                const categorySpan = document.createElement("div");
-                categorySpan.classList.add("category");
-                // If data exists, fill it; otherwise, keep it empty but present
-                categorySpan.innerText = cardData.category || ""; 
-                card.dataset.category = cardData.category || "";
-                card.appendChild(categorySpan);
-
-                const deleteBtn = document.createElement("button");
-                deleteBtn.innerText = "×";
-                deleteBtn.classList.add("delete-btn");
-
-                deleteBtn.addEventListener("click", (e) => {
-                    // e.stopPropagation() prevents the click from triggering 
-                    // any other listeners on the card itself
-                    e.stopPropagation(); 
-                    
-                    card.remove(); // Removes the card from the screen
-                    saveState();  // Updates localStorage
-                });
-
-                card.appendChild(deleteBtn);
-
-                const editBtn = document.createElement("button");
-                editBtn.innerText = "✏️";
-                editBtn.classList.add("edit-btn");
-                editBtn.addEventListener("click", (e) => {
-                    e.stopPropagation();
-                    // Find the span inside the card
-                    const textSpan = card.querySelector("span"); 
-                    const catSpan = card.querySelector(".category");
-                    // Toggle Edit Mode
-                    const isEditing = textSpan.getAttribute("contenteditable") === "true";
-                    
-                    if (!isEditing) {
-                        textSpan.setAttribute("contenteditable", "true");
-                        catSpan.setAttribute("contenteditable", "true");
-
-                        catSpan.style.minHeight = "1em"; 
-                        catSpan.style.border = "1px dashed #ccc";
-                        textSpan.focus(); // Put the cursor in the text
-                        editBtn.innerText = "💾"; // Change icon to save disk
-                        card.draggable = false; // Disable dragging while typing
-                    } else {
-                        textSpan.setAttribute("contenteditable", "false");
-                        catSpan.setAttribute("contenteditable", "false");
-                        catSpan.style.minHeight = "1"; 
-                        catSpan.style.border = "";
-                        // Update the dataset to match the new edited text
-                        card.dataset.category = catSpan.innerText; 
-                        editBtn.innerText = "✏️"; // Change back to pencil
-                        card.draggable = true;  // Re-enable dragging
-                        saveState(); // Record the new text to LocalStorage
-                    }
-                });
-
-                card.appendChild(editBtn);
-
-                card.addEventListener("dragstart", dragStart);
-                card.addEventListener("dragend", dragEnd);
+                card = createCard(cardData.id, cardData.text, cardData.category || "");
             }
 
             if (list) {

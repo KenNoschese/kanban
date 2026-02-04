@@ -22,6 +22,7 @@ body{
 
 
 .delete-btn {
+    grid-area: delete;
     font-size: 1.2rem;
     font-weight: bold;
     color: #ff4d4d;
@@ -40,6 +41,7 @@ body{
 }
 
 .edit-btn {
+    grid-area: edit;
     font-size: 0.9rem;
     background: #f0f0f0;
     border: 1px solid #ddd;
@@ -140,10 +142,13 @@ h1{
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transition: transform 0.15s, box-shadow 0.15s;
     
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    grid-template-areas: 
+        "task delete edit"
+        "category delete edit";
     align-items: center;
-    gap: 10px;
+    gap: 4px 10px;
     
     border: 1px solid #e1e4e8;
 }
@@ -167,7 +172,7 @@ span:focus {
 }
 
 .card span {
-    flex-grow: 1;
+    grid-area: task;
     margin-bottom: 0;
     color: #2d3748;
     font-weight: 500;
@@ -182,6 +187,8 @@ span:focus {
 }
 
 .category {
+    grid-area: category;
+    justify-self: start;
     font-size: 0.75rem;
     color: #718096;
     background-color: #f7fafc;
@@ -192,3 +199,4 @@ span:focus {
     margin-bottom: 0;
     white-space: nowrap;
 }
+
